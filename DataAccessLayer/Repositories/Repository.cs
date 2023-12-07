@@ -14,7 +14,14 @@ public class Repository<TEntity>(AppDbContext appDbContext) : IRepository<TEntit
     public async Task DeleteAsync(int id)
     {
         var entity = await GetByIdAsync(id);
-        _DbContext.Remove(entity);
+        if (entity != null)
+        {
+            _DbContext.Remove(entity);
+        }
+        else
+        {
+            throw new ArgumentException();
+        }
     }
 
     public async Task<List<TEntity>> GetAllAsync()

@@ -1,3 +1,7 @@
+using AutoMapper;
+using BusinessLogicLayer;
+using BusinessLogicLayer.Interfaces;
+using BusinessLogicLayer.Services;
 using DataAccessLayer;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Repositories;
@@ -10,12 +14,24 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
 builder.Services.AddDbContext<AppDbContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionString")));
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddTransient<IGameCategoryInterface, GameCategoryRepository>();
 builder.Services.AddTransient<IGameInterface, GameRepository>();
+builder.Services.AddTransient<IGameService, GameService>();
 
+
+#region Parametr of Mapper
+var mapperConfig = new MapperConfiguration(mc =>
+{
+    mc.AddProfile(new MyMapper());
+});
+
+IMapper mapper = mapperConfig.CreateMapper();
+builder.Services.AddSingleton(mapper);
+#endregion
 
 var app = builder.Build();
 
