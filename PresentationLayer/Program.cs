@@ -21,6 +21,7 @@ builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 builder.Services.AddTransient<IGameCategoryInterface, GameCategoryRepository>();
 builder.Services.AddTransient<IGameInterface, GameRepository>();
 builder.Services.AddTransient<IGameService, GameService>();
+builder.Services.AddTransient<IGameCategoryService,  GameCategoryService>();
 
 
 #region Parametr of Mapper

@@ -11,7 +11,7 @@ namespace PresentationLayer.Controllers
     {
         private readonly IGameService _gameService = gameService;
 
-        [HttpGet("/Game/Getall/")]
+        [HttpGet("/Game/getall/")]
         public async Task<IActionResult> GetAll()
         {
             var list = await _gameService.GetAllGamesAsync();
@@ -19,7 +19,7 @@ namespace PresentationLayer.Controllers
         }
 
 
-        [HttpGet("/Game/Get/{id}")]
+        [HttpGet("/Game/get/{id}")]
         public async Task<IActionResult> Get(int id)
         {
             try
