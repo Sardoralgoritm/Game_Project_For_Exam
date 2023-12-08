@@ -4,5 +4,5 @@ namespace DataAccessLayer.Interfaces;
 
 public interface IGameInterface : IRepository<Game>
 {
-    Task<List<Game>> GetAllWithCattegory();
+    List<Game> GetAllWithCategory(int id);
 }

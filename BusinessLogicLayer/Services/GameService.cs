@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using BusinessLogicLayer.DTOs.GameDtos;
+using BusinessLogicLayer.Extended;
 using BusinessLogicLayer.Interfaces;
 using BusinessLogicLayer.Validators;
 using DataAccessLayer.Entities;
 using DataAccessLayer.Exceptions;
 using DataAccessLayer.Interfaces;
-using System.Reflection;
 
 namespace BusinessLogicLayer.Services;
 
@@ -57,8 +57,8 @@ public class GameService(IUnitOfWork unitOfWork,
 
     public async Task<List<GameDto>> GetAllGamesAsync()
     {
-        var cur = await _unitOfWork.Game.GetAllAsync();
-        return cur.Select(i => _mapper.Map<GameDto>(i)).ToList();
+        var list = await _unitOfWork.Game.GetAllAsync();
+        return list.Select(i => _mapper.Map<GameDto>(i)).ToList();
     }
 
     public async Task<GameDto> GetGameByIdAsync(int id)
@@ -73,6 +73,34 @@ public class GameService(IUnitOfWork unitOfWork,
             throw new GameException("Game not found!");
         }
 
+    }
+
+    public List<GameDto> GetAllThisId(int id)
+    {
+        var test = _unitOfWork.Game.GetAllWithCategory(id);
+        if (test != null)
+        {
+            return test.Select(i => _mapper.Map<GameDto>(i)).ToList();
+        }
+        else
+        {
+            throw new GameException("There are no games for this categoryId!");
+        }
+    }
+
+    public async Task<PagedList<GameDto>> Filter(FilterParametrs parametrs)
+    {
+        var list = await _unitOfWork.Game.GetAllAsync();
+        if (parametrs.Name is not "")
+        {
+            list = list.Where(i => i.Name.ToLower().Contains(parametrs.Name.ToLower())).ToList();
+        }
+
+        var result = list.Select(i => _mapper.Map<GameDto>(i)).ToList();
+
+        PagedList<GameDto> pagedList = new(result, result.Count, parametrs.PageNumber, parametrs.PageSize);
+
+        return pagedList.ToPagedList(result, parametrs.PageSize, parametrs.PageNumber);
     }
 
     public async Task UpdateAsync(UpdateGameDto updateGame)
@@ -96,5 +124,16 @@ public class GameService(IUnitOfWork unitOfWork,
         {
             throw new GameException("Game is not Valid!");
         }
+    }
+
+    public async Task<PagedList<GameDto>> GetPagedListAsync(int pageNumber, int pageSize)
+    {
+        var list = await _unitOfWork.Game.GetAllAsync();
+        var pagedList = new PagedList<GameDto>(list.Select(c => _mapper.Map<GameDto>(c)).ToList(),
+                                                   list.Count(), pageNumber, pageSize);
+
+        return pagedList.ToPagedList(pagedList.Data,
+                                     pageSize,
+                                     pageNumber);
     }
 }

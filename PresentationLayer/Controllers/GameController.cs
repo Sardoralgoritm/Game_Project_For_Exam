@@ -1,7 +1,9 @@
 ﻿using BusinessLogicLayer.DTOs.GameDtos;
+using BusinessLogicLayer.Extended;
 using BusinessLogicLayer.Interfaces;
 using DataAccessLayer.Exceptions;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace PresentationLayer.Controllers
 {
@@ -35,6 +37,62 @@ namespace PresentationLayer.Controllers
             {
                 return StatusCode(500, ex.Message);
             }
+        }
+
+
+        [HttpGet("/GameCategory/getall/{id}")]
+        public ActionResult GetallThisId(int id)
+        {
+            try
+            {
+                var test = _gameService.GetAllThisId(id);
+                return Ok(test);
+            }
+            catch (GameException ex)
+            {
+                return BadRequest(ex.errorMessage);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+
+        [HttpGet("/Game/paged/")]
+        public async Task<IActionResult> GetPaged(int pageSize = 10, int pageNumber = 1)
+        {
+            var list = await _gameService.GetPagedListAsync(pageNumber, pageSize);
+            var metaData = new
+            {
+                list.TotalCount,
+                list.PageSize,
+                list.CurrentPage,
+                list.HasNext,
+                list.HasPrevious
+            };
+
+            Response.Headers.Append("X-Pagination", JsonConvert.SerializeObject(metaData));
+            return Ok(list.Data);
+        }
+
+
+        [HttpGet("/Game/filter")]
+        public async Task<IActionResult> Filter([FromQuery] FilterParametrs parametrs)
+        {
+            var games = await _gameService.Filter(parametrs);
+
+            var metaData = new
+            {
+                games.TotalCount,
+                games.PageSize,
+                games.CurrentPage,
+                games.HasNext,
+                games.HasPrevious
+            };
+
+            Response.Headers.Append("X-Pagination", JsonConvert.SerializeObject(metaData));
+            return Ok(games.Data);
         }
 
 
@@ -75,13 +133,14 @@ namespace PresentationLayer.Controllers
             }
         }
 
+
         [HttpDelete("/Game/delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             try
             {
                 await _gameService.DeleteAsync(id);
-                return Ok("User deleted");
+                return Ok("Game deleted");
             }
             catch (GameException ex)
             {
@@ -92,5 +151,6 @@ namespace PresentationLayer.Controllers
                 return StatusCode(500, e.Message);
             }
         }
+
     }
 }

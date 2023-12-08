@@ -1,6 +1,4 @@
-﻿using DataAccessLayer.Entities;
-
-namespace BusinessLogicLayer.DTOs.GameDtos;
+﻿namespace BusinessLogicLayer.DTOs.GameDtos;
 
 public class GameDto : BaseDto
 {

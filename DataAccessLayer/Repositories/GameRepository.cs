@@ -1,6 +1,5 @@
 ﻿using DataAccessLayer.Entities;
 using DataAccessLayer.Interfaces;
-using Microsoft.EntityFrameworkCore;
 
 namespace DataAccessLayer.Repositories;
 
@@ -8,6 +7,6 @@ public class GameRepository(AppDbContext appDb) : Repository<Game>(appDb), IGame
 {
     private readonly AppDbContext _appDb = appDb;
 
-    public async Task<List<Game>> GetAllWithCattegory()
-        => await _appDb.Games.Include(i => i.gameCategory).ToListAsync();
+    public List<Game> GetAllWithCategory(int id)
+        => _appDb.Games.Where(i => i.GameCategoryId == id).ToList();
 }

@@ -1,8 +1,9 @@
 ﻿using BusinessLogicLayer.DTOs.GameCategoyDtos;
 using BusinessLogicLayer.Exceptions;
+using BusinessLogicLayer.Extended;
 using BusinessLogicLayer.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace PresentationLayer.Controllers
 {
@@ -11,24 +12,6 @@ namespace PresentationLayer.Controllers
     public class GameCategoryController(IGameCategoryService categoryService) : ControllerBase
     {
         private readonly IGameCategoryService _categoryService = categoryService;
-
-        [HttpPost("/GameCategory/add/")]
-        public async Task<IActionResult> Post(AddGameCategoryDto gameCategoryDto)
-        {
-            try
-            {
-                await _categoryService.AddGameCategoryAsync(gameCategoryDto);
-                return Ok("Successfully Added");
-            }
-            catch (GameCategoryException ex)
-            {
-                return BadRequest(ex.errorMessage);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
 
         [HttpGet("/GameCategory/getall/")]
         public async Task<IActionResult> GetAll()
@@ -44,6 +27,59 @@ namespace PresentationLayer.Controllers
             {
                 var result = await _categoryService.GetGameCategoryByIdAsync(id);
                 return Ok(result);
+            }
+            catch (GameCategoryException ex)
+            {
+                return BadRequest(ex.errorMessage);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet("/GameCategory/paged/")]
+        public async Task<IActionResult> GetPaged(int pageSize = 10, int pageNumber = 1)
+        {
+            var list = await _categoryService.GetPagedListAsync(pageNumber, pageSize);
+            var metaData = new
+            {
+                list.TotalCount,
+                list.PageSize,
+                list.CurrentPage,
+                list.HasNext,
+                list.HasPrevious
+            };
+
+            Response.Headers.Append("X-Pagination", JsonConvert.SerializeObject(metaData));
+            return Ok(list.Data);
+        }
+
+        [HttpGet("/GameCategory/filter")]
+        public async Task<IActionResult> Filter([FromQuery] FilterParametrs parametrs)
+        {
+            var categories = await _categoryService.Filter(parametrs);
+
+            var metaData = new
+            {
+                categories.TotalCount,
+                categories.PageSize,
+                categories.CurrentPage,
+                categories.HasNext,
+                categories.HasPrevious
+            };
+
+            Response.Headers.Append("X-Pagination", JsonConvert.SerializeObject(metaData));
+            return Ok(categories.Data);
+        }
+
+        [HttpPost("/GameCategory/add/")]
+        public async Task<IActionResult> Post(AddGameCategoryDto gameCategoryDto)
+        {
+            try
+            {
+                await _categoryService.AddGameCategoryAsync(gameCategoryDto);
+                return Ok("Successfully Added");
             }
             catch (GameCategoryException ex)
             {
