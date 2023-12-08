@@ -8,5 +8,4 @@ public class GameDto : BaseDto
     public int Rate { get; set; }
     public string Company { get; set; } = string.Empty;
     public int GameCategoryId { get; set; }
-    public GameCategory gameCategory { get; set; } = new GameCategory();
 }

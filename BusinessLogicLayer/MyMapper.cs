@@ -12,5 +12,7 @@ public class MyMapper : Profile
             .ReverseMap();
         CreateMap<AddGameDto, Game>()
             .ReverseMap();
+        CreateMap<UpdateGameDto, Game>()
+            .ReverseMap();
     }
 }
