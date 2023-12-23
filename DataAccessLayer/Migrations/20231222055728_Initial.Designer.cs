@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231207060955_CreateGame")]
-    partial class CreateGame
+    [Migration("20231222055728_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -78,7 +78,7 @@ namespace DataAccessLayer.Migrations
                     b.HasOne("DataAccessLayer.Entities.GameCategory", "gameCategory")
                         .WithMany("Games")
                         .HasForeignKey("GameCategoryId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("gameCategory");

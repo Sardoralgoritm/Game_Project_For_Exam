@@ -107,8 +107,8 @@ public class GameService(IUnitOfWork unitOfWork,
     {
         if (updateGame.IsValid())
         {
-            var list = await _unitOfWork.GameCategory.GetAllAsync();
-            if (list.Any(i => i.Id == updateGame.GameCategoryId))
+            var cur = await _unitOfWork.GameCategory.GetByIdAsync(updateGame.GameCategoryId);
+            if (cur != null)
             {
                 var game = _mapper.Map<Game>(updateGame);
                 game.gameCategory = null;

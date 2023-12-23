@@ -13,7 +13,7 @@ namespace PresentationLayer.Controllers
     {
         private readonly IGameService _gameService = gameService;
 
-        [HttpGet("/Game/getall/")]
+        [HttpGet("/game/getall/")]
         public async Task<IActionResult> GetAll()
         {
             var list = await _gameService.GetAllGamesAsync();
@@ -21,7 +21,7 @@ namespace PresentationLayer.Controllers
         }
 
 
-        [HttpGet("/Game/get/{id}")]
+        [HttpGet("/game/get/{id}")]
         public async Task<IActionResult> Get(int id)
         {
             try
@@ -40,7 +40,7 @@ namespace PresentationLayer.Controllers
         }
 
 
-        [HttpGet("/GameCategory/getall/{id}")]
+        [HttpGet("/game-category/getall/{id}")]
         public ActionResult GetallThisId(int id)
         {
             try
@@ -59,7 +59,7 @@ namespace PresentationLayer.Controllers
         }
 
 
-        [HttpGet("/Game/paged/")]
+        [HttpGet("/game/paged/")]
         public async Task<IActionResult> GetPaged(int pageSize = 10, int pageNumber = 1)
         {
             var list = await _gameService.GetPagedListAsync(pageNumber, pageSize);
@@ -77,7 +77,7 @@ namespace PresentationLayer.Controllers
         }
 
 
-        [HttpGet("/Game/filter")]
+        [HttpGet("/game/filter")]
         public async Task<IActionResult> Filter([FromQuery] FilterParametrs parametrs)
         {
             var games = await _gameService.Filter(parametrs);
@@ -115,12 +115,13 @@ namespace PresentationLayer.Controllers
         }
 
 
-        [HttpPut("/Game/update/")]
+        [HttpPut("/game/update/")]
         public async Task<IActionResult> Put(UpdateGameDto updateGameDto)
         {
             try
             {
                 await _gameService.UpdateAsync(updateGameDto);
+
                 return Ok(updateGameDto);
             }
             catch (GameException ex)
@@ -134,7 +135,7 @@ namespace PresentationLayer.Controllers
         }
 
 
-        [HttpDelete("/Game/delete/{id}")]
+        [HttpDelete("/game/delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             try

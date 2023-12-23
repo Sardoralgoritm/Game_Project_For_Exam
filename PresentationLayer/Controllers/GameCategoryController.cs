@@ -13,7 +13,7 @@ namespace PresentationLayer.Controllers
     {
         private readonly IGameCategoryService _categoryService = categoryService;
 
-        [HttpGet("/GameCategory/getall/")]
+        [HttpGet("/game-category/getall/")]
         public async Task<IActionResult> GetAll()
         {
             var list = await _categoryService.GetAllGamesCategoryAsync();
@@ -123,7 +123,7 @@ namespace PresentationLayer.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, ex.InnerException);
             }
         }
     }

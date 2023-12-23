@@ -75,7 +75,7 @@ namespace DataAccessLayer.Migrations
                     b.HasOne("DataAccessLayer.Entities.GameCategory", "gameCategory")
                         .WithMany("Games")
                         .HasForeignKey("GameCategoryId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("gameCategory");

@@ -14,7 +14,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                     .HasMany(i => i.Games)
                     .WithOne(c => c.gameCategory)
                     .HasForeignKey(c => c.GameCategoryId)
-                    .OnDelete(DeleteBehavior.ClientCascade);
+                    .OnDelete(DeleteBehavior.Cascade);
 
         base.OnModelCreating(modelBuilder);
     }
